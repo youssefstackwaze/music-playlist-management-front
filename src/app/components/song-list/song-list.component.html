@@ -1,9 +1,41 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2>Music Library</h2>
 
-  <a routerLink="/songs/new" class="btn btn-primary">
-    + Add Song
-  </a>
+  <div class="d-flex gap-2">
+    <button
+      class="btn btn-outline-secondary"
+      (click)="importCsv()"
+      [disabled]="importing">
+      {{ importing ? 'Importing...' : 'Import CSV' }}
+    </button>
+
+    <a routerLink="/songs/new" class="btn btn-primary">
+      + Add Song
+    </a>
+  </div>
+</div>
+
+<!-- Search bar -->
+<div class="row g-2 mb-4">
+  <div class="col-auto">
+    <select class="form-select" [(ngModel)]="searchType" name="searchType">
+      <option value="artist">By artist</option>
+      <option value="genre">By genre</option>
+    </select>
+  </div>
+  <div class="col">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Search..."
+      name="searchTerm"
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="search()">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary" (click)="search()">Search</button>
+    <button class="btn btn-link" (click)="clearSearch()">Clear</button>
+  </div>
 </div>
 
 <div *ngIf="loading" class="text-center">
@@ -12,6 +44,10 @@
 
 <div *ngIf="errorMessage" class="alert alert-danger">
   {{ errorMessage }}
+</div>
+
+<div *ngIf="infoMessage" class="alert alert-success">
+  {{ infoMessage }}
 </div>
 
 <div class="row" *ngIf="!loading">
@@ -25,6 +61,10 @@
 
         <p class="card-text">
           <strong>Artist:</strong> {{ song.artist }}
+        </p>
+
+        <p class="card-text">
+          <strong>Genre:</strong> {{ song.genre }}
         </p>
 
         <p class="card-text">

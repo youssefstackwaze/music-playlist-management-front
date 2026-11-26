@@ -35,6 +35,12 @@
         <div class="d-flex gap-2">
 
           <a
+            [routerLink]="['/playlists', playlist.id]"
+            class="btn btn-primary btn-sm">
+            Open
+          </a>
+
+          <a
             [routerLink]="['/playlists/edit', playlist.id]"
             class="btn btn-warning btn-sm">
             Edit

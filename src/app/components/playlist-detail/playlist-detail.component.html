@@ -1,0 +1,146 @@
+<a routerLink="/playlists" class="btn btn-link px-0 mb-2">&larr; Back to playlists</a>
+
+<div *ngIf="loading" class="text-center">Loading playlist...</div>
+
+<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+<div *ngIf="infoMessage" class="alert alert-success">{{ infoMessage }}</div>
+
+<div *ngIf="playlist">
+
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h2 class="mb-1">{{ playlist.name }}</h2>
+      <p class="text-muted mb-0">{{ playlist.description }}</p>
+    </div>
+    <span class="badge bg-secondary align-self-center">
+      {{ playlist.songs?.length || 0 }} songs
+    </span>
+  </div>
+
+  <!-- Player -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Player</h5>
+
+      <div class="d-flex gap-2 mb-2">
+        <button class="btn btn-success btn-sm" (click)="playPlaylist()">▶ Play</button>
+        <button class="btn btn-outline-secondary btn-sm" (click)="pause()">⏸ Pause</button>
+        <button class="btn btn-outline-secondary btn-sm" (click)="resume()">⏯ Resume</button>
+        <button class="btn btn-outline-secondary btn-sm" (click)="refreshPlayerState()">⟳ State</button>
+      </div>
+
+      <div *ngIf="playerState" class="small text-muted">
+        Status:
+        <strong>{{ playerState.playing ? 'Playing' : 'Paused' }}</strong>
+        &nbsp;|&nbsp; Playlist: {{ playerState.playlistId || '—' }}
+        &nbsp;|&nbsp; Current song: {{ songLabel(playerState.currentSongId) }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Songs in the playlist -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Songs in this playlist</h5>
+
+      <ol class="list-group list-group-numbered" *ngIf="(playlist.songs?.length || 0) > 0">
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+          *ngFor="let song of playlist.songs">
+          <span>{{ song.title }} <span class="text-muted">— {{ song.artist }}</span>
+            <span class="badge bg-light text-dark ms-2">{{ song.genre }}</span>
+          </span>
+          <button class="btn btn-outline-danger btn-sm" (click)="removeSong(song.id)">Remove</button>
+        </li>
+      </ol>
+
+      <div *ngIf="(playlist.songs?.length || 0) === 0" class="alert alert-info mb-0">
+        This playlist is empty. Add some songs below.
+      </div>
+    </div>
+  </div>
+
+  <!-- Add a song -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Add a song</h5>
+
+      <div *ngIf="addableSongs.length === 0" class="alert alert-info mb-0">
+        No song available to add (create songs first, or all are already in the playlist).
+      </div>
+
+      <div class="d-flex gap-2" *ngIf="addableSongs.length > 0">
+        <select class="form-select" [(ngModel)]="selectedSongId">
+          <option [ngValue]="undefined" disabled>-- choose a song --</option>
+          <option *ngFor="let song of addableSongs" [ngValue]="song.id">
+            {{ song.title }} - {{ song.artist }}
+          </option>
+        </select>
+        <button
+          class="btn btn-primary"
+          [disabled]="selectedSongId === undefined"
+          (click)="addSong(selectedSongId)">
+          Add
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Shuffle -->
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Shuffle</h5>
+          <div class="d-flex gap-2">
+            <select class="form-select" [(ngModel)]="shuffleType">
+              <option *ngFor="let t of shuffleTypes" [value]="t">{{ t }}</option>
+            </select>
+            <button class="btn btn-dark" (click)="shuffle()">Shuffle</button>
+          </div>
+          <small class="text-muted">Reorders the songs using the chosen strategy.</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Export</h5>
+          <div class="d-flex gap-2">
+            <select class="form-select" [(ngModel)]="exportFormat">
+              <option *ngFor="let f of exportFormats" [value]="f">{{ f }}</option>
+            </select>
+            <button class="btn btn-outline-primary" (click)="export()">Download</button>
+          </div>
+          <small class="text-muted">Downloads the playlist as a file.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="card-title mb-0">Recommendations</h5>
+        <button class="btn btn-outline-secondary btn-sm" (click)="loadRecommendations()">
+          Get recommendations
+        </button>
+      </div>
+
+      <ul class="list-group" *ngIf="recommendations.length > 0">
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+          *ngFor="let song of recommendations">
+          <span>{{ song.title }} <span class="text-muted">— {{ song.artist }}</span>
+            <span class="badge bg-light text-dark ms-2">{{ song.genre }}</span>
+          </span>
+          <button class="btn btn-outline-primary btn-sm" (click)="addSong(song.id)">Add</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>

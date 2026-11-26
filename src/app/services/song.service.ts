@@ -32,4 +32,20 @@ export class SongService {
   deleteSong(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  getSongsByArtist(artist: string): Observable<Song[]> {
+    return this.http.get<Song[]>(`${this.apiUrl}/artist/${encodeURIComponent(artist)}`);
+  }
+
+  getSongsByGenre(genre: string): Observable<Song[]> {
+    return this.http.get<Song[]>(`${this.apiUrl}/genre/${encodeURIComponent(genre)}`);
+  }
+
+  importSongsFromCsv(): Observable<string> {
+    return this.http.post(
+      `${environment.apiBaseUrl}/api/batch/import-songs`,
+      {},
+      { responseType: 'text' }
+    );
+  }
 }

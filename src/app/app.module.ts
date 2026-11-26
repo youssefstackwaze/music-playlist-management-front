@@ -9,6 +9,7 @@ import { SongListComponent } from './components/song-list/song-list.component';
 import { SongFormComponent } from './components/song-form/song-form.component';
 import { PlaylistListComponent } from './components/playlist-list/playlist-list.component';
 import { PlaylistFormComponent } from './components/playlist-form/playlist-form.component';
+import { PlaylistDetailComponent } from './components/playlist-detail/playlist-detail.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { PlaylistFormComponent } from './components/playlist-form/playlist-form.
     SongListComponent,
     SongFormComponent,
     PlaylistListComponent,
-    PlaylistFormComponent
+    PlaylistFormComponent,
+    PlaylistDetailComponent
   ],
   imports: [
     BrowserModule,
